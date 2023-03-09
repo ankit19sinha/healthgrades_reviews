@@ -17,6 +17,9 @@ class HG_spider(scrapy.Spider):
 
     
     def parse_details(self, response):
+        # create a unique_id from the url
+        unique_id = response.url.split("/")[-1]
+
         # get provider name and specialty
         provider_name = response.css("h1::text").get().replace("Dr.", "").split(",")[0].strip()
         provider_spec = response.css("h2::text").get()
@@ -78,6 +81,7 @@ class HG_spider(scrapy.Spider):
                     item = HealthgradesItem()
 
                     # define provider level information
+                    item["unique_id"] = unique_id
                     item["provider_name"] = provider_name
                     item["provider_spec"] = provider_spec
                     item["provider_addresses"] = list(addresses)
@@ -108,6 +112,7 @@ class HG_spider(scrapy.Spider):
             
             else:
                 item = HealthgradesItem()
+                item["unique_id"] = unique_id
                 item["provider_name"] = provider_name
                 item["provider_spec"] = provider_spec
                 item["provider_addresses"] = list(addresses)
@@ -121,6 +126,7 @@ class HG_spider(scrapy.Spider):
         
         except:
             item = HealthgradesItem()
+            item["unique_id"] = unique_id
             item["provider_name"] = provider_name
             item["provider_spec"] = provider_spec
             item["provider_addresses"] = list(addresses)
